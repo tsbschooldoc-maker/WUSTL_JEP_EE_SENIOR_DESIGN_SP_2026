@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "name": "dev_280049_v2_2",
+          "type": "ccs-debug",
+          "request": "launch",
+          "projectInfo": {
+              "name": "dev_280049_v2_2",
+              "resourceId": "/dev_280049_v2_2"
+          },
+          "target": "${workspaceFolder}/TMS320F280049C.ccxml"
+      }
+  ]
+}

@@ -1,0 +1,162 @@
+[
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/PLECS_to_CCS.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/PLECS_to_CCS_0.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/PLECS_to_CCS_1.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/PLECS_to_CCS_2.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/PLECS_to_CCS_3.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/PLECS_to_CCS_cla.cla"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/PLECS_to_CCS_hal.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/PLECS_to_CCS_main.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/ain_type5.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/dac_type2.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/dcan_type0.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/dispatcher.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/dispatcher_asm.asm"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/epwm_type4.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/power.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/qep.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/sdfm.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/spi_type2.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/stack_monitor.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/shrd/uart.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/src/cap_28004x.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/src/dio_28004x.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/src/pga_28004x.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/src/sci_28004x.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/tisrc/f28004x_adc.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/tisrc/f28004x_codestartbranch.asm"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/tisrc/f28004x_cputimers.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/tisrc/f28004x_defaultisr.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/tisrc/f28004x_devinit.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/tisrc/f28004x_globalvariabledefs.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH -xc",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/tisrc/f28004x_gpio.c"
+   },
+   {
+      "directory" : "C:/Users/David/Downloads/280049-Final/280049/Debug",
+      "command"   : "clang++ -I\"C:/Users/David/Downloads/280049-Final/280049\" -I\"C:/Users/David/Downloads/280049-Final/280049/app\" -I\"C:/Users/David/Downloads/280049-Final/280049/pil\" -I\"C:/Users/David/Downloads/280049-Final/280049/shrd\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc\" -I\"C:/Users/David/Downloads/280049-Final/280049/inc_impl\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc\" -I\"C:/Users/David/Downloads/280049-Final/280049/tiinc/driverlib\" -I\"C:/Users/David/Downloads/280049-Final/280049/cg\" -I\"C:/ti/ccs2050/ccs/tools/compiler/ti-cgt-c2000_25.11.0.LTS/include\" -D_INLINE -DCPU1 -D_PLEXIM_ -DEXTERNAL_MODE=1 -D_FLASH",
+      "file"      : "C:/Users/David/Downloads/280049-Final/280049/tisrc/f28004x_usdelay.asm"
+   }
+]

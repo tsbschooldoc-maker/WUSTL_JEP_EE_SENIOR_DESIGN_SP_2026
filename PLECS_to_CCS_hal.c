@@ -340,7 +340,7 @@ void PLECS_to_CCS_initHal()
       params.offset = 0.000000000e+00f;
       // set SOC trigger to PWM1
       params.ADCSOCxCTL.bit.TRIGSEL = 5;
-      params.ADCSOCxCTL.bit.ACQPS = 30;
+      params.ADCSOCxCTL.bit.ACQPS = 50;
       PLX_AIN_setupChannel(AdcHandles[1], 0, 0, &params);
    }
    // configure SOC1 of ADC-B to measure ADCIN1
@@ -351,7 +351,7 @@ void PLECS_to_CCS_initHal()
       params.offset = 0.000000000e+00f;
       // set SOC trigger to PWM1
       params.ADCSOCxCTL.bit.TRIGSEL = 5;
-      params.ADCSOCxCTL.bit.ACQPS = 30;
+      params.ADCSOCxCTL.bit.ACQPS = 50;
       PLX_AIN_setupChannel(AdcHandles[1], 1, 1, &params);
    }
    // configure SOC2 of ADC-B to measure ADCIN2
@@ -362,7 +362,7 @@ void PLECS_to_CCS_initHal()
       params.offset = 0.000000000e+00f;
       // set SOC trigger to PWM1
       params.ADCSOCxCTL.bit.TRIGSEL = 5;
-      params.ADCSOCxCTL.bit.ACQPS = 30;
+      params.ADCSOCxCTL.bit.ACQPS = 50;
       PLX_AIN_setupChannel(AdcHandles[1], 2, 2, &params);
    }
    // configure ADC C
@@ -379,7 +379,7 @@ void PLECS_to_CCS_initHal()
       params.offset = 0.000000000e+00f;
       // set SOC trigger to PWM1
       params.ADCSOCxCTL.bit.TRIGSEL = 5;
-      params.ADCSOCxCTL.bit.ACQPS = 30;
+      params.ADCSOCxCTL.bit.ACQPS = 50;
       PLX_AIN_setupChannel(AdcHandles[0], 0, 1, &params);
    }
    // configure SOC1 of ADC-C to measure ADCIN3
@@ -390,7 +390,7 @@ void PLECS_to_CCS_initHal()
       params.offset = 0.000000000e+00f;
       // set SOC trigger to PWM1
       params.ADCSOCxCTL.bit.TRIGSEL = 5;
-      params.ADCSOCxCTL.bit.ACQPS = 30;
+      params.ADCSOCxCTL.bit.ACQPS = 50;
       PLX_AIN_setupChannel(AdcHandles[0], 1, 3, &params);
    }
    // configure SOC2 of ADC-C to measure ADCIN5
@@ -401,7 +401,7 @@ void PLECS_to_CCS_initHal()
       params.offset = 0.000000000e+00f;
       // set SOC trigger to PWM1
       params.ADCSOCxCTL.bit.TRIGSEL = 5;
-      params.ADCSOCxCTL.bit.ACQPS = 30;
+      params.ADCSOCxCTL.bit.ACQPS = 50;
       PLX_AIN_setupChannel(AdcHandles[0], 2, 5, &params);
    }
    DISPR_sinit();

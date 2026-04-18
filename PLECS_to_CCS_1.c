@@ -9,11 +9,9 @@ typedef float real_t;
 #define REAL_EPSILON FLT_EPSILON
 static float P_previous = 0.0;
 static float V_previous = 0.0;
-static float V_ref = 0; // Start at 0V
-static int initialized = 0;
-static float Step = 0.01;   // Move 0.001V at a time
-// Declare the counter and initialize it to 0
-static int slow_loop_counter = 0;
+static float V_ref = 18; // Start at 18V
+static float Step = 0.05;   // Move 0.01V at a time
+static int initialized = 0; // Required for the initialization block
 
 struct CScriptStruct
 {
@@ -101,74 +99,59 @@ void PLECS_to_CCS_1_cScriptStart(const struct CScriptStruct *cScriptStruct)
 #pragma CODE_SECTION(PLECS_to_CCS_1_cScriptOutput, "ramfuncs")
 
 
-
 void PLECS_to_CCS_1_cScriptOutput(const struct CScriptStruct *cScriptStruct)
 {
-   // 1. Read Inputs (happens at full 50 kHz)
-   float V_pv = InputSignal(0, 0);
-   float I_pv = InputSignal(1, 0);
+    float V_pv = InputSignal(0, 0); 
+    float I_pv = InputSignal(1, 0);
+    
+    // 1. Static counter for frequency division
+    static int mppt_counter = 0;
+    mppt_counter++;
 
-   // 2. Multirate Counter
-   slow_loop_counter++;
+    // 2. Run once at startup to lock in the initial PV voltage
+    if(initialized == 0) {
+       V_ref = V_pv;  // Record starting PV voltage
+       initialized = 1;     // Never run this block again
+    }
 
-   // Run the MPPT logic at 100 Hz (Every 500th cycle)
-   if (slow_loop_counter >= 500)
-   {
+    // 3. Run MPPT algorithm at 10 Hz (Every 5000th cycle)
+    if (mppt_counter >= 5000) {
+        
+        float Power = V_pv * I_pv;
 
-      float Power = V_pv * I_pv;
+        // Only run P&O if power flow is above 0.5 W
+        if (Power > 0.5) {
+            float dP = Power - P_previous;
+            float dV = V_pv - V_previous;
 
-      // Physical implementation V_ref startup
-      if (initialized == 0)
-      {
-         V_ref = V_pv; // record starting pv voltage
-         initialized = 1;    // Never run this block again
-      }
+            if (dP > 0) {
+                if (dV > 0) V_ref += Step;
+                else V_ref -= Step;
+            } else {
+                if (dV > 0) V_ref -= Step;
+                else V_ref += Step;
+            }
+        } 
+        // Kickstart - If power is zero, slowly crawl down to find the knee
+        else {
+            V_ref -= 0.01; // step to avoid overshooting
+        }
 
-      // Only run P&O if power flow is above 0.5 W
-      if (Power > 0.5)
-      {
-         float dP = Power - P_previous;
-         float dV = V_pv - V_previous;
+        // Clamping
+        if (V_ref > 20) V_ref = 20; // Voc
+        if (V_ref < 5.0) V_ref = 5.0; 
 
-         if (dP > 0)
-         {
-            if (dV > 0)
-               V_ref += Step;
-            else
-               V_ref -= Step;
-         }
-         else
-         {
-            if (dV > 0)
-               V_ref -= Step;
-            else
-               V_ref += Step;
-         }
-      }
-      // Kickstart - If power is zero, slowly crawl down to find the knee
-      else
-      {
-         V_ref -= 0.01; //step to avoid overshooting
-      }
+        // Save current states for the next MPPT cycle
+        P_previous = Power;
+        V_previous = V_pv;
+        
+        // Reset counter
+        mppt_counter = 0;
+    }
 
-      // Clamping
-      if (V_ref > 20.0)
-         V_ref = 20.0;              // Voc
-      if (V_ref < 5.0)
-         V_ref = 5.0;
-
-      // Save history for the next 100 Hz cycle
-      P_previous = Power;
-      V_previous = V_pv;
-
-      // Reset the counter
-      slow_loop_counter = 0;
-   }
-
-   // 3. Write Output to the PI Loop (happens at full 50 kHz)
-   OutputSignal(0, 0) = V_ref;
+    // 4. Output written at full 50 kHz using the safely held static memory
+    OutputSignal(0, 0) = V_ref;
 }
-
 void PLECS_to_CCS_1_cScriptUpdate(const struct CScriptStruct *cScriptStruct)
 {
 }

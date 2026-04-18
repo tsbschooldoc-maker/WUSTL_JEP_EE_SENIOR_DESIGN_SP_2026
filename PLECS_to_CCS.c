@@ -591,20 +591,21 @@ void PLECS_to_CCS_step(void)
     // ==========================================================
     // 2. SCALE PIN VOLTAGES TO REAL-WORLD AMPS & VOLTS
     // ==========================================================
-
+   
     // --- Current Sensor Math (ACS725) ---
-    ext_I_Bat = ((v_pin_I_Bat*8.0308f)-13.618f) ; // Bidirectional Storage
-    ext_I_PV  = ((4.283f*v_pin_I_PV)-1.5638f);   // Unidirectional PV
-    ext_I_EV  = ((v_pin_I_EV*3.8501f)-1.2111f);   // Unidirectional EV
+    ext_I_Bat = ((v_pin_I_Bat*7.6541f)-12.62f) ; // Bidirectional Storage
+    ext_I_PV  = ((3.8549f*v_pin_I_PV)-1.2705f);   // Unidirectional PV
+    ext_I_EV  = ((v_pin_I_EV*3.8358f)-1.2658f);   // Unidirectional EV
 
     // Current Sensor Noise Clamp 
     if (ext_I_PV < 0.0f) { ext_I_PV = 0.0f; }
     if (ext_I_EV < 0.0f) { ext_I_EV = 0.0f; }
 
     // --- Voltage Divider Math ---
-      ext_V_PV  = v_pin_V_PV  * 6.552f; 
-      ext_V_Bat = v_pin_V_Bat * 5.006f; 
-      ext_V_EV  = v_pin_V_EV  * 2.479f; 
+    ext_V_PV  = v_pin_V_PV  * 7.353f; 
+    ext_V_Bat = v_pin_V_Bat * 4.993f; 
+    ext_V_EV  = v_pin_V_EV  * 2.480f; 
+  
 
     abcounter++;
       
@@ -798,7 +799,7 @@ void PLECS_to_CCS_step(void)
     *  Sum : 'PLECS_to_CCS/Control Logic/Sum1'
     *  Constant : 'PLECS_to_CCS/Control Logic/EV target current'
     */
-   PLECS_to_CCS_B.Zero_OrderHold_2 = 2.1f - PLECS_to_CCS_B.C_Script[0];
+   PLECS_to_CCS_B.Zero_OrderHold_2 = 1.2f - PLECS_to_CCS_B.C_Script[0];
 
    /* Discrete Integrator : 'PLECS_to_CCS/Control Logic/Buck Current PI/Discrete Time/Ki Integrator/Ki ~= 0/Discrete\nIntegrator/edge_triggered/Discrete\nIntegrator'
     * incorporates
@@ -835,9 +836,9 @@ void PLECS_to_CCS_step(void)
 
    /* Saturation : 'PLECS_to_CCS/Control Logic/Buck Current PI/Saturation/internal/Saturation Select/constant/Saturation' */
    PLECS_to_CCS_B.Saturation_2 = PLECS_to_CCS_B.Sum_2;
-   if (PLECS_to_CCS_B.Saturation_2 > 0.6f)
+   if (PLECS_to_CCS_B.Saturation_2 > 0.56f)
    {
-      PLECS_to_CCS_B.Saturation_2 = 0.6f;
+      PLECS_to_CCS_B.Saturation_2 = 0.56f;
    }
    else if (PLECS_to_CCS_B.Saturation_2 < 0.f)
    {
@@ -964,7 +965,7 @@ void PLECS_to_CCS_step(void)
     */
    PLECS_to_CCS_B.Product = PLECS_to_CCS_B.StateMachine[1] *
                             PLECS_to_CCS_B.Min_Max *
-                            ((float)(2.4f >
+                            ((float)(2.5f >
                                      PLECS_to_CCS_B.C_Script[0])) *
                             PLECS_to_CCS_B.Saturation_4;
 

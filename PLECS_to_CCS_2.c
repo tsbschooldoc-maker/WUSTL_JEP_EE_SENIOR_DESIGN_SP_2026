@@ -7,13 +7,10 @@ typedef float real_t;
 #define REAL_MAX FLT_MAX
 #define REAL_MIN FLT_MIN
 #define REAL_EPSILON FLT_EPSILON
-// Multirate Counter for 100 Hz execution
-static int state_loop_counter = 0;
-
 // State Machine Thresholds
-static const float V_PV_MIN      = 5.0f;  // Minimum voltage from PV
-//static const float V_Storage_Max = 14.4f; // 100% SOC for Storage
-static const float V_Storage_Min = 11.0f; // 20% SOC (Low Voltage Disconnect)
+float V_PV_MIN  = 5.0;      // Minimum voltage from PV
+float V_Storage_Max = 14.4;   // 100% SOC for Storage
+float V_Storage_Min = 10;   // 20% SOC (Low Voltage Disconnect)
 struct CScriptStruct
 {
    int numInputTerminals;
@@ -102,57 +99,42 @@ void PLECS_to_CCS_2_cScriptStart(const struct CScriptStruct *cScriptStruct)
 
 void PLECS_to_CCS_2_cScriptOutput(const struct CScriptStruct *cScriptStruct)
 {
-   // 1. Read Inputs (happens at full 50 kHz)
-   float Voltage_Pv = InputSignal(0, 0);
-   float Voltage_Bat = InputSignal(1, 0);
+    // 1. Read Inputs
+    float Voltage_Pv = InputSignal(0, 0);
+    float Voltage_Bat = InputSignal(1, 0);
 
-   // Default state variables
-   float enable_4sw = 0.0f;
-   float enable_buck = 0.0f;
+    // 2. State Memory & Counter (MUST BE STATIC!)
+    static float enable_4sw = 0.0;
+    static float enable_buck = 0.0;
+    static int state_counter = 0;
 
-   // 2. Multirate Counter
-   state_loop_counter++;
+    // Increment counter
+    state_counter++;
 
-   // Run the State Machine logic at 100 Hz (Every 500th cycle)
-   if (state_loop_counter >= 500)
-   {
+    // 3. Run State Machine at 100 Hz (Every 500th tick of the 50 kHz loop)
+    if (state_counter >= 500) 
+    {
+        if (Voltage_Pv < V_PV_MIN) {
+            enable_4sw = 0.0; 
+            if (Voltage_Bat > V_Storage_Min) {
+                enable_buck = 1.0; 
+            } else {
+                enable_buck = 0.0;
+            }
+        } 
+        else {
+            enable_4sw = 1.0; 
+            enable_buck = 1.0; 
+        }
+        
+        // Reset the counter
+        state_counter = 0;
+    }
 
-      // 3. Evaluate Conditions
-      if (Voltage_Pv < V_PV_MIN)
-      {
-         // No power from PV panel, keep 4-Switch converter off
-         enable_4sw = 0.0f;
-
-         if (Voltage_Bat > V_Storage_Min)
-         {
-            // Mode 4: No panel output, Storage has SOC to give
-            enable_buck = 1.0f;
-         }
-         else
-         {
-            // Mode 6: No panel output, Storage has no SOC to give
-            enable_buck = 0.0f;
-         }
-      }
-      else
-      {
-         // PV panel has more than min voltage
-         enable_4sw = 1.0f;
-
-         // In modes 2, 3, and 5 the Buck is enabled.
-         // Throttling is handled by the external Min block.
-         enable_buck = 1.0f;
-      }
-
-      // Reset the counter
-      state_loop_counter = 0;
-   }
-
-   // 4. Outputs (Written to the pins at full 50 kHz)
-   OutputSignal(0, 0) = enable_4sw;
-   OutputSignal(1, 0) = enable_buck;
+    // 4. Outputs (Written to the Routing Logic at full 50 kHz using the saved memory)
+    OutputSignal(0, 0) = enable_4sw;
+    OutputSignal(1, 0) = enable_buck;
 }
-
 
 void PLECS_to_CCS_2_cScriptUpdate(const struct CScriptStruct *cScriptStruct)
 {
