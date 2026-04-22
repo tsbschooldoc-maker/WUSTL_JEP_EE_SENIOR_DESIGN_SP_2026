@@ -96,30 +96,36 @@ void PLECS_to_CCS_3_cScriptStart(const struct CScriptStruct *cScriptStruct)
 void PLECS_to_CCS_3_cScriptOutput(const struct CScriptStruct *cScriptStruct)
 {
    float D = InputSignal(0, 0);  // Duty Cycle from PID
-   // UNIFIED 4-SWITCH BUCK-BOOST LOGIC
-   // D now ranges from 0.0 to 2.0
 
+   if (D > 0.95 && D <= 1.0)
+   {
+      D = 0.95;
+   }
+   else if (D > 1.0 && D < 1.05)
+   {
+      D = 1.05;
+   }
 
+   // 2. UNIFIED 4-SWITCH BUCK-BOOST LOGIC
    if (D < 0.02)
    {
       // Global Safety Cutoff
       OutputSignal(0, 0) = 0.0;
       OutputSignal(1, 0) = 0.0;
    }
-   else if (D <= 1.0)
+   else if (D <= 0.95)
    {
-      // BUCK REGION (D from 0.02 to 1.0)
-      OutputSignal(0, 0) = D;     // Left leg switching normally
-      OutputSignal(1, 0) = 1.0;   // Right leg locked ON (Boost is bypassed)
+      // BUCK REGION (D from 0.02 to 0.95)
+      OutputSignal(0, 0) = D;     
+      OutputSignal(1, 0) = 0.95;  
    }
    else
    {
-      // BOOST REGION (D from 1.0 to 2.0)
-      OutputSignal(0, 0) = 1.0;     // Left leg locked ON (Buck is bypassed)
-      OutputSignal(1, 0) = 2.0 - D; // As D rises above 1.0, Boost action increases
+      // BOOST REGION (D from 1.05 to 2.0)
+      OutputSignal(0, 0) = 0.95;   
+      OutputSignal(1, 0) = 2.0 - D; 
    }
 }
-
 
 void PLECS_to_CCS_3_cScriptUpdate(const struct CScriptStruct *cScriptStruct)
 {

@@ -9,8 +9,8 @@ typedef float real_t;
 #define REAL_EPSILON FLT_EPSILON
 static float P_previous = 0.0;
 static float V_previous = 0.0;
-static float V_ref = 18; // Start at 18V
-static float Step = 0.05;   // Move 0.01V at a time
+static float V_ref; // Start at 18V
+static float Step = 0.2f;   // Move 0.01V at a time
 static int initialized = 0; // Required for the initialization block
 
 struct CScriptStruct
@@ -68,7 +68,7 @@ struct CScriptStruct
 #define NumDiscStates cScriptStruct->numDiscStates
 #define NumZCSignals cScriptStruct->numZCSignals
 #define NumParameters cScriptStruct->numParameters
-#define NumSampleTimes cScriptStruct->numSampleTimes
+#define NumSampleTimes cScriptStruct->numSampleTimesF
 #define IsMajorStep cScriptStruct->isMajorTimeStep
 #define CurrentTime cScriptStruct->time
 #define NextSampleHit (*cScriptStruct->nextSampleHit)
@@ -117,36 +117,38 @@ void PLECS_to_CCS_1_cScriptOutput(const struct CScriptStruct *cScriptStruct)
     // 3. Run MPPT algorithm at 10 Hz (Every 5000th cycle)
     if (mppt_counter >= 5000) {
         
-        float Power = V_pv * I_pv;
+  float Power = V_pv * I_pv;
 
-        // Only run P&O if power flow is above 0.5 W
-        if (Power > 0.5) {
+        // 1. Raise threshold to ~1.5W to stay above the zero-current noise floor
+        if (Power > 1.5f) {
             float dP = Power - P_previous;
             float dV = V_pv - V_previous;
 
-            if (dP > 0) {
-                if (dV > 0) V_ref += Step;
-                else V_ref -= Step;
-            } else {
-                if (dV > 0) V_ref -= Step;
-                else V_ref += Step;
+            // 2. Add a deadband. Only perturb if the power change is actual, not noise.
+            if (fabsf(dP) > 0.05f) { 
+                if (dP > 0) {
+                    if (dV > 0) V_ref += Step;
+                    else V_ref -= Step;
+                } else {
+                    if (dV > 0) V_ref -= Step;
+                    else V_ref += Step;
+                }
             }
         } 
-        // Kickstart - If power is zero, slowly crawl down to find the knee
+        // Kickstart - Safely crawl down to find the knee
         else {
-            V_ref -= 0.01; // step to avoid overshooting
+            V_ref -= 0.5f; 
         }
 
         // Clamping
-        if (V_ref > 20) V_ref = 20; // Voc
-        if (V_ref < 5.0) V_ref = 5.0; 
+        if (V_ref > 20.0f) V_ref = 20.0f; 
+        if (V_ref < 5.0f) V_ref = 5.0f; 
 
-        // Save current states for the next MPPT cycle
         P_previous = Power;
         V_previous = V_pv;
         
         // Reset counter
-        mppt_counter = 0;
+        mppt_counter = 0.0f;
     }
 
     // 4. Output written at full 50 kHz using the safely held static memory

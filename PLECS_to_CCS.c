@@ -12,20 +12,17 @@
 #include "includes.h" 
 
 // 2. Tells this file that these variables are defined globally somewhere else
-extern volatile float ext_V_EV;
-extern volatile float ext_I_EV;
-extern volatile float ext_V_PV;
-extern volatile float ext_I_PV;
-extern volatile float ext_V_Bat;
-extern volatile float ext_I_Bat;
+extern  float ext_V_EV;
+extern  float ext_I_EV;
+extern  float ext_V_PV;
+extern  float ext_I_PV;
+extern  float ext_V_Bat;
+extern  float ext_I_Bat;
 // Tells this file that your custom I2C functions exist in main.c
 extern void update_telemetry_data(void);
 extern void respond_to_ESP32(void);
 
-// Force the compiler to keep this array for the graph!
-#pragma RETAIN(I_EV_history)
-volatile float I_EV_history[200]; 
-volatile uint16_t plot_index = 0;
+
 
 // Live debugging variables (Must be volatile to show up in Watch window!)
 float v_pin_V_PV  = 0.0f;
@@ -562,10 +559,10 @@ void PLECS_to_CCS_initialize(void)
 
 void PLECS_to_CCS_step(void)
 {
-  // ==========================================================
-    // 1. READ RAW ADC REGISTERS & SCALE TO PIN VOLTAGE (0-3.3V)
-    // ==========================================================
-    
+
+// 1. READ RAW ADC REGISTERS & SCALE TO PIN VOLTAGE (0-3.3V)
+
+   
     // --- VOLTAGES (ADCB Module) ---
     // Pin 24: ADCINB0 -> PV Voltage
    v_pin_V_PV  = (float)AdcbResultRegs.ADCRESULT0 * (3.3f / 4096.0f); 
@@ -588,9 +585,7 @@ void PLECS_to_CCS_step(void)
     v_pin_I_EV  = (float)AdccResultRegs.ADCRESULT2 * (3.3f / 4096.0f); 
 
 
-    // ==========================================================
-    // 2. SCALE PIN VOLTAGES TO REAL-WORLD AMPS & VOLTS
-    // ==========================================================
+    // 2. SCALE PIN VOLTAGES TO Actual AMPS & VOLTS
    
     // --- Current Sensor Math (ACS725) ---
     ext_I_Bat = ((v_pin_I_Bat*7.6541f)-12.62f) ; // Bidirectional Storage
@@ -605,8 +600,16 @@ void PLECS_to_CCS_step(void)
     ext_V_PV  = v_pin_V_PV  * 7.353f; 
     ext_V_Bat = v_pin_V_Bat * 4.993f; 
     ext_V_EV  = v_pin_V_EV  * 2.480f; 
-  
+   
 
+   /*
+   ext_V_PV = 18.0f;
+   ext_I_PV= 1.0f;
+   ext_V_Bat = 12.5f;
+   ext_I_Bat = 1.2f;
+   ext_V_EV = 5.8f;
+   ext_I_EV = 0.0f;
+   */
     abcounter++;
       
 
@@ -614,13 +617,18 @@ void PLECS_to_CCS_step(void)
     // 3. TELEMETRY & I2C EXECUTION
     // ==========================================================
   // Run telemetry only once every 500 cycles (100 Hz instead of 50 kHz)
+  // ==========================================================
+    // 3. TELEMETRY & I2C EXECUTION
+    // ==========================================================
+    // Run telemetry only once every 500 cycles (100 Hz instead of 50 kHz)
     static uint16_t telemetry_tick = 0;
     if (++telemetry_tick >= 500) {
-        update_telemetry_data();
+        update_telemetry_data();  
         telemetry_tick = 0;
+            
     }
+respond_to_ESP32();
 
-     respond_to_ESP32();
 
    if (PLECS_to_CCS_errorStatus)
    {
@@ -789,11 +797,34 @@ void PLECS_to_CCS_step(void)
       PLECS_to_CCS_errorStatus = *PLECS_to_CCS_cScriptStruct[3].errorStatus;
 
    /* PWM : 'PLECS_to_CCS/Leg1_Q1_Q2\nePWM1A & B' */
+/* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg_1' */
+   PLECS_to_CCS_B.Shut_Off_Leg_1 = PLECS_to_CCS_B.RoutingLogic[0] > 0.04f;
+   
+   /* PWM : 'PLECS_to_CCS/Leg1_Q1_Q2\nePWM1A & B' */
+   if((PLECS_to_CCS_B.Shut_Off_Leg_1) == 0)
+   {
+      PLXHAL_PWM_setToPassive(0);
+   }
+   else
+   {
+      PLXHAL_PWM_setDuty(0, PLECS_to_CCS_B.RoutingLogic[0]);
+      PLXHAL_PWM_setToOperational(0);
+   }
 
-   PLXHAL_PWM_setDuty(0, PLECS_to_CCS_B.RoutingLogic[0]);
+   /* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg 2' */
+   PLECS_to_CCS_B.Shut_Off_Leg2 = PLECS_to_CCS_B.RoutingLogic[1] > 0.04f;
+   
    /* PWM : 'PLECS_to_CCS/Leg2_Q3_Q4\nePWM4A & B' */
+   if((PLECS_to_CCS_B.Shut_Off_Leg2) == 0)
+   {
+      PLXHAL_PWM_setToPassive(1);
+   }
+   else
+   {
+      PLXHAL_PWM_setDuty(1, PLECS_to_CCS_B.RoutingLogic[1]);
+      PLXHAL_PWM_setToOperational(1);
+   }
 
-   PLXHAL_PWM_setDuty(1, PLECS_to_CCS_B.RoutingLogic[1]);
    /* Zero-Order Hold : 'PLECS_to_CCS/Control Logic/Buck Current PI/Discrete Time/Zero-Order\nHold'
     * incorporates
     *  Sum : 'PLECS_to_CCS/Control Logic/Sum1'
@@ -836,9 +867,9 @@ void PLECS_to_CCS_step(void)
 
    /* Saturation : 'PLECS_to_CCS/Control Logic/Buck Current PI/Saturation/internal/Saturation Select/constant/Saturation' */
    PLECS_to_CCS_B.Saturation_2 = PLECS_to_CCS_B.Sum_2;
-   if (PLECS_to_CCS_B.Saturation_2 > 0.56f)
+   if (PLECS_to_CCS_B.Saturation_2 > 0.7f)
    {
-      PLECS_to_CCS_B.Saturation_2 = 0.56f;
+      PLECS_to_CCS_B.Saturation_2 = 0.7f;
    }
    else if (PLECS_to_CCS_B.Saturation_2 < 0.f)
    {
@@ -896,15 +927,6 @@ void PLECS_to_CCS_step(void)
       PLECS_to_CCS_B.Saturation_3 = 0.f;
    }
 
-   /* Minimum / Maximum : 'PLECS_to_CCS/Control Logic/Min\/Max' */
-   {
-      float u, y;
-      y = PLECS_to_CCS_B.Saturation_2;
-      u = PLECS_to_CCS_B.Saturation_3;
-      if (u < y)
-         y = u;
-      PLECS_to_CCS_B.Min_Max = y;
-   }
    if (PLECS_to_CCS_subTaskHit[0])
    {
       /* Zero-Order Hold : 'PLECS_to_CCS/Control Logic/Buck-Boost Voltage PI1/Discrete Time/Zero-Order\nHold'
@@ -958,20 +980,44 @@ void PLECS_to_CCS_step(void)
          PLECS_to_CCS_B.Saturation_4 = 0.f;
       }
    }
-   /* Product : 'PLECS_to_CCS/Control Logic/Product'
-    * incorporates
-    *  Relational Operator : 'PLECS_to_CCS/Control Logic/Relational\nOperator'
-    *  Constant : 'PLECS_to_CCS/Control Logic/EV current limit'
+  /* Minimum / Maximum : 'PLECS_to_CCS/Control Logic/Min\/Max' 
+    * (Updated to cascade all 4 hardware limits)
     */
+   {
+      float u, y;
+      y = PLECS_to_CCS_B.Saturation_2;        // 1. Buck Current PI Limit
+      
+      u = PLECS_to_CCS_B.Saturation_3;        // 2. Storage Min Voltage PI Limit
+      if (u < y) y = u;
+      
+      u = 2.5f > PLECS_to_CCS_B.C_Script[0];  // 3. Hardware Overcurrent Relay (2.5A)
+      if (u < y) y = u;
+      
+      u = PLECS_to_CCS_B.Saturation_4;        // 4. EV Max Voltage PI Limit
+      if (u < y) y = u;
+      
+      PLECS_to_CCS_B.Min_Max = y;             // The absolute safest limit wins
+   }
+
+   /* Product : 'PLECS_to_CCS/Control Logic/Product' */
+   // The safest duty cycle is now strictly multiplied by the On/Off State Machine
    PLECS_to_CCS_B.Product = PLECS_to_CCS_B.StateMachine[1] *
-                            PLECS_to_CCS_B.Min_Max *
-                            ((float)(2.5f >
-                                     PLECS_to_CCS_B.C_Script[0])) *
-                            PLECS_to_CCS_B.Saturation_4;
+                            PLECS_to_CCS_B.Min_Max;
 
+ /* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg_3' */
+   PLECS_to_CCS_B.Shut_Off_Leg_3 = PLECS_to_CCS_B.Product > 0.04f;
+   
    /* PWM : 'PLECS_to_CCS/Buck_leg\nePWM2A & B' */
-
-   PLXHAL_PWM_setDuty(2, PLECS_to_CCS_B.Product);
+   if((PLECS_to_CCS_B.Shut_Off_Leg_3) == 0)
+   {
+      PLXHAL_PWM_setToPassive(2);
+   }
+   else
+   {
+      PLXHAL_PWM_setDuty(2, PLECS_to_CCS_B.Product);
+      PLXHAL_PWM_setToOperational(2);
+   }
+   
    /* ADC : 'PLECS_to_CCS/Current ADC' */
    PLECS_to_CCS_B.CurrentADC[0] = PLXHAL_ADC_getIn(0, 0);
    PLECS_to_CCS_B.CurrentADC[1] = PLXHAL_ADC_getIn(0, 1);

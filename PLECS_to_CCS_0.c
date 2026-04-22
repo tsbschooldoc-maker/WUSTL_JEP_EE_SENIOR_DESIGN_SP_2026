@@ -7,12 +7,12 @@ typedef float real_t;
 #define REAL_MAX FLT_MAX
 #define REAL_MIN FLT_MIN
 #define REAL_EPSILON FLT_EPSILON
-volatile float ext_V_EV = 0.0f;
-volatile float ext_I_EV = 0.0f;
-volatile float ext_V_PV = 0.0f;
-volatile float ext_I_PV = 0.0f;
-volatile float ext_V_Bat = 0.0f;
-volatile float ext_I_Bat = 0.0f;
+ float ext_V_EV = 0.0f;
+ float ext_I_EV = 0.0f;
+ float ext_V_PV = 0.0f;
+ float ext_I_PV = 0.0f;
+ float ext_V_Bat = 0.0f;
+ float ext_I_Bat = 0.0f;
 struct CScriptStruct
 {
    int numInputTerminals;
@@ -108,8 +108,10 @@ void PLECS_to_CCS_0_cScriptOutput(const struct CScriptStruct *cScriptStruct)
    OutputSignal(5, 0) = ext_I_Bat; // Pin 6
 }
 
+#pragma CODE_SECTION(PLECS_to_CCS_0_cScriptUpdate, "ramfuncs")
 void PLECS_to_CCS_0_cScriptUpdate(const struct CScriptStruct *cScriptStruct)
 {
+   
 }
 
 void PLECS_to_CCS_0_cScriptDerivative(

@@ -117,18 +117,18 @@ void PLECS_to_CCS_2_cScriptOutput(const struct CScriptStruct *cScriptStruct)
         if (Voltage_Pv < V_PV_MIN) {
             enable_4sw = 0.0; 
             if (Voltage_Bat > V_Storage_Min) {
-                enable_buck = 1.0; 
+                enable_buck = 1.0f; 
             } else {
-                enable_buck = 0.0;
+                enable_buck = 0.0f;
             }
         } 
         else {
-            enable_4sw = 1.0; 
-            enable_buck = 1.0; 
+            enable_4sw = 1.0f; 
+            enable_buck = 1.0f; 
         }
         
         // Reset the counter
-        state_counter = 0;
+        state_counter = 0.0;
     }
 
     // 4. Outputs (Written to the Routing Logic at full 50 kHz using the saved memory)

@@ -14,12 +14,12 @@ Uint16 i2c_tx_index = 0;
 #ifndef _FLASH
 #endif
 
-extern volatile float ext_V_EV;
-extern volatile float ext_I_EV;
-extern volatile float ext_V_PV;
-extern volatile float ext_I_PV;
-extern volatile float ext_V_Bat;
-extern volatile float ext_I_Bat;
+extern   float ext_V_EV;
+extern   float ext_I_EV;
+extern   float ext_V_PV;
+extern   float ext_I_PV;
+extern   float ext_V_Bat;
+extern   float ext_I_Bat;
 
 void init_I2C_Hardware(void)
 {
@@ -67,43 +67,44 @@ void PLECS_to_CCS_initialize();
 #endif
 #endif
 
-// Function to determine the current operating mode
+/// Function to determine the current operating mode
 float determine_system_mode(void)
 {
-    // We use a small threshold (0.1A or 1.0V) to account for sensor noise. 
-    // Pure 0.0f is rare in physical hardware!
-    float i_threshold = 0.1f;  
-    float v_threshold = 1.0f;  
+    float i_threshold = 0.1f;
+    float v_threshold = 1.0f;
 
-    // Helper booleans to make the logic readable
     bool pv_active = (ext_V_PV > v_threshold) || (ext_I_PV > i_threshold);
     bool ev_charging = (ext_I_EV > i_threshold);
 
-    // Mode 0: PV charging storage only (No EV charging)
+    // --- NEW: EMA Filter for Battery Current ---
+    // This variable must be static so it remembers its value between cycles
+    static float smoothed_I_Bat = 0.0f;
+
+    // Alpha of 0.05 heavily smooths the data. 
+    // It takes 5% of the new noisy reading and 95% of the old stable reading.
+    smoothed_I_Bat = (0.05f * ext_I_Bat) + (0.95f * smoothed_I_Bat);
+    // -----------------------------------------
+
     if (pv_active && !ev_charging) 
     {
         return 0.0f; 
     } 
-    // Mode 1: No PV power, storage charges EV
     else if (!pv_active && ev_charging) 
     {
         return 1.0f; 
     } 
-    // Mode 2: PV has output, Storage current is positive, EV is being charged
-    else if (pv_active && ev_charging && (ext_I_Bat > i_threshold)) 
+    // FIXED: Use the smoothed current, and remove the dead zone gap
+    else if (pv_active && ev_charging && (smoothed_I_Bat >= 0.0f)) 
     {
         return 2.0f; 
     } 
-    // Mode 3: PV has output, storage current is negative, EV is being charged
-    else if (pv_active && ev_charging && (ext_I_Bat < -i_threshold)) 
+    else if (pv_active && ev_charging && (smoothed_I_Bat < 0.0f)) 
     {
         return 3.0f; 
     }
 
-    // Default/Unknown mode (if no conditions are perfectly met due to transitions)
     return -1.0f; 
 }
-
 // Function to determine the charging speed status
 // Returns 1.0f for Fast Charge, 0.0f for Non-Fast Charge, -1.0f for Not Charging
 
@@ -146,14 +147,12 @@ void respond_to_ESP32(void)
         I2caRegs.I2CSTR.bit.SCD = 1; // Clear the flag first
         i2c_tx_index = 0;            // Reset the byte counter
         
-        // --- THE MAGIC FLUSH ---
-        // Rapidly toggle the hardware reset bit. 
-        // This instantly vaporizes any leftover bytes stuck in the shift register!
+        
         I2caRegs.I2CMDR.bit.IRS = 0; 
         I2caRegs.I2CMDR.bit.IRS = 1; 
     }
 
-    // 2. Feed the Pipeline
+ 
    // 2. Feed the Pipeline
     if (I2caRegs.I2CSTR.bit.XRDY == 1)
     {

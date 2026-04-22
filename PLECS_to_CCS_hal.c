@@ -21,7 +21,7 @@
 #include "epwm.h"
 #include "hrpwm.h"
 
-
+extern void respond_to_ESP32(void);
 /* HAL Declarations */
 void DevInit(uint32_t aDeviceClkConf);
 void InitFlashHz(uint32_t clkHz);
@@ -44,11 +44,13 @@ PIL_Obj_t PilObj;
 PIL_Handle_t PilHandle = 0;
 extern PLX_PWM_Handle_t EpwmHandles[];
 // PWM Enable Functions
+#pragma CODE_SECTION(PLXHAL_PWM_setToPassive, "ramfuncs")
 void PLXHAL_PWM_setToPassive(uint16_t aChannel)
 {
    PLX_PWM_setOutToPassive(EpwmHandles[aChannel]);
 }
 
+#pragma CODE_SECTION(PLXHAL_PWM_setToOperational, "ramfuncs")
 void PLXHAL_PWM_setToOperational(uint16_t aChannel)
 {
    PLX_PWM_setOutToOperational(EpwmHandles[aChannel]);
@@ -182,7 +184,6 @@ void PLECS_to_CCS_syncTimers(void)
 /* Background task */
 void PLECS_to_CCS_background(void)
 {
-
 }
 
 /* HAL Initialization Code */

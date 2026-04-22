@@ -49,9 +49,9 @@ ORDERED_OBJS += \
 "../tisrc/driverlib/plx_driverlib_fpu32_eabi.lib" \
 "../tisrc/fast/f28004x_fast_rom_symbols_fpu32_eabi.lib" \
 $(GEN_CMDS__FLAG) \
--l"C:/Users/David/Downloads/280049-Final/280049/pil/pil_c28.a" \
--l"C:/Users/David/Downloads/280049-Final/280049/tisrc/driverlib/plx_driverlib.a" \
--l"C:/Users/David/Downloads/280049-Final/280049/tisrc/driverlib/sfo_driverlib.a" \
+-l"C:/repo/WUSTL_JEP_EE_SENIOR_DESIGN_SP_2026/pil/pil_c28.a" \
+-l"C:/repo/WUSTL_JEP_EE_SENIOR_DESIGN_SP_2026/tisrc/driverlib/plx_driverlib.a" \
+-l"C:/repo/WUSTL_JEP_EE_SENIOR_DESIGN_SP_2026/tisrc/driverlib/sfo_driverlib.a" \
 -llibc.a \
 
 -include ../makefile.init

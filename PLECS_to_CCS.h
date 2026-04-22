@@ -96,6 +96,9 @@ typedef struct
    float Product;                   /* PLECS_to_CCS/Control Logic/Product */
    float CurrentADC[3];             /* PLECS_to_CCS/Current ADC */
    float VoltageADC[3];             /* PLECS_to_CCS/Voltage ADC */
+   bool Shut_Off_Leg_1;
+   bool Shut_Off_Leg2;
+   bool Shut_Off_Leg_3;
 } PLECS_to_CCS_BlockOutputs;
 extern PLECS_to_CCS_BlockOutputs PLECS_to_CCS_B;
 

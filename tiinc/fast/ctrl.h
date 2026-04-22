@@ -278,11 +278,12 @@ static inline int_least16_t CTRL_getCount_speed(CTRL_Handle handle)
 //! \brief     Gets the state count
 //! \param[in] handle  The controller (CTRL) handle
 //! \return    The state count
+#pragma FUNC_ALWAYS_INLINE(CTRL_getCount_state)
 static inline int_least32_t CTRL_getCount_state(CTRL_Handle handle)
 {
   CTRL_Obj *obj = (CTRL_Obj *)handle;
 
-  return(obj->counter_state);
+ return (handle->counter_state);
 } // end of CTRL_getCount_state() function
 
 
@@ -333,11 +334,12 @@ static inline CTRL_ErrorCode_e CTRL_getErrorCode(CTRL_Handle handle)
 //! \brief     Gets the enable controller flag value from the controller
 //! \param[in] handle  The controller (CTRL) handle
 //! \return    The enable controller flag value
+#pragma FUNC_ALWAYS_INLINE(CTRL_getFlag_enable)
 static inline bool CTRL_getFlag_enable(CTRL_Handle handle)
 {
   CTRL_Obj *obj = (CTRL_Obj *)handle;
 
-  return(obj->flag_enable);
+  return (handle->flag_enable);
 } // end of CTRL_getFlag_enable() function
 
 
@@ -846,11 +848,12 @@ static inline float32_t CTRL_getSpeedCtrlPeriod_sec(CTRL_Handle handle)
 //! \brief     Gets the controller state
 //! \param[in] handle  The controller (CTRL) handle
 //! \return    The controller state
+#pragma FUNC_ALWAYS_INLINE(CTRL_getState)
 static inline CTRL_State_e CTRL_getState(CTRL_Handle handle)
 {
   CTRL_Obj *obj = (CTRL_Obj *)handle;
 
-  return(obj->state);
+  return (handle->state);
 } // end of CTRL_getState() function
 
 
@@ -1032,11 +1035,12 @@ static inline float32_t *CTRL_getVq_offset_V_addr(CTRL_Handle handle)
 //! \param[in] handle  The controller (CTRL) handle
 //! \param[in] state   The controller state
 //! \return    The wait time, controller clock counts
-static inline int_least32_t CTRL_getWaitTime(CTRL_Handle handle,const CTRL_State_e state)
+#pragma FUNC_ALWAYS_INLINE(CTRL_getWaitTime)
+static inline int_least32_t CTRL_getWaitTime(CTRL_Handle handle, const CTRL_State_e state)
 {
   CTRL_Obj *obj = (CTRL_Obj *)handle;
 
-  return(obj->waitTimes[state]);
+return (handle->waitTime[state]);
 } // end of CTRL_getWaitTime() function
 
 
