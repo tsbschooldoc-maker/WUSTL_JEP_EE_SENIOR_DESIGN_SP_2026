@@ -67,66 +67,8 @@ void PLECS_to_CCS_initialize();
 #endif
 #endif
 
-/// Function to determine the current operating mode
-float determine_system_mode(void)
-{
-    float i_threshold = 0.1f;
-    float v_threshold = 1.0f;
 
-    bool pv_active = (ext_V_PV > v_threshold) || (ext_I_PV > i_threshold);
-    bool ev_charging = (ext_I_EV > i_threshold);
-
-    // --- NEW: EMA Filter for Battery Current ---
-    // This variable must be static so it remembers its value between cycles
-    static float smoothed_I_Bat = 0.0f;
-
-    // Alpha of 0.05 heavily smooths the data. 
-    // It takes 5% of the new noisy reading and 95% of the old stable reading.
-    smoothed_I_Bat = (0.05f * ext_I_Bat) + (0.95f * smoothed_I_Bat);
-    // -----------------------------------------
-
-    if (pv_active && !ev_charging) 
-    {
-        return 0.0f; 
-    } 
-    else if (!pv_active && ev_charging) 
-    {
-        return 1.0f; 
-    } 
-    // FIXED: Use the smoothed current, and remove the dead zone gap
-    else if (pv_active && ev_charging && (smoothed_I_Bat >= 0.0f)) 
-    {
-        return 2.0f; 
-    } 
-    else if (pv_active && ev_charging && (smoothed_I_Bat < 0.0f)) 
-    {
-        return 3.0f; 
-    }
-
-    return -1.0f; 
-}
-// Function to determine the charging speed status
-// Returns 1.0f for Fast Charge, 0.0f for Non-Fast Charge, -1.0f for Not Charging
-
-float determine_charging_speed(void)
-{
-    // Fast charging: 1.8A or greater
-    if (ext_I_EV >= 1.8f) 
-    {
-        return 1.0f; 
-    }
-    // Regular charging: Anything above "zero" (0.1A to account for sensor noise)
-    else if (ext_I_EV > 0.1f) 
-    {
-        return 0.0f; 
-    }
-    // Standby: Effectively zero current
-    else 
-    {
-        return -1.0f; 
-    }
-}
-
+// We only need to send 6 floats now (24 bytes) instead of 8
 void update_telemetry_data(void)
 {
     telemetry_buffer[0].f_val = ext_V_PV;
@@ -135,8 +77,7 @@ void update_telemetry_data(void)
     telemetry_buffer[3].f_val = ext_I_Bat;
     telemetry_buffer[4].f_val = ext_V_EV;
     telemetry_buffer[5].f_val = ext_I_EV;
-    telemetry_buffer[6].f_val = determine_system_mode();
-    telemetry_buffer[7].f_val = determine_charging_speed();
+    // We removed the two determine() functions!
 }
 
 void respond_to_ESP32(void)
@@ -146,18 +87,16 @@ void respond_to_ESP32(void)
     {
         I2caRegs.I2CSTR.bit.SCD = 1; // Clear the flag first
         i2c_tx_index = 0;            // Reset the byte counter
-        
-        
+
         I2caRegs.I2CMDR.bit.IRS = 0; 
         I2caRegs.I2CMDR.bit.IRS = 1; 
     }
 
- 
    // 2. Feed the Pipeline
     if (I2caRegs.I2CSTR.bit.XRDY == 1)
     {
-        // Simply send the 32 bytes of float data (8 floats * 4 bytes)
-        if (i2c_tx_index < 32)
+        // Send the 24 bytes of float data (6 floats * 4 bytes)
+        if (i2c_tx_index < 24)
         {
             Uint16 float_index = i2c_tx_index / 4;
             Uint16 byte_index = i2c_tx_index % 4;
@@ -166,10 +105,13 @@ void respond_to_ESP32(void)
             I2caRegs.I2CDXR.all = byte_to_send;
             i2c_tx_index++;
         }
-        // Notice there is NO 'else' block here anymore!
+        else 
+        {
+            // CRITICAL FIX: Send a dummy byte so the hardware releases the clock line!
+            I2caRegs.I2CDXR.all = 0xFF;
+        }
     }
 }
-
 
 void main(void)
 {

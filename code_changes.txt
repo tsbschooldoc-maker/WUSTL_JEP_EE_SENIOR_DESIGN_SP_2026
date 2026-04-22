@@ -1,0 +1,618 @@
+diff --git a/PLECS_to_CCS.c b/PLECS_to_CCS.c
+index fea0248..600e53f 100644
+--- a/PLECS_to_CCS.c
++++ b/PLECS_to_CCS.c
+@@ -12,20 +12,17 @@
+ #include "includes.h" 
+ 
+ // 2. Tells this file that these variables are defined globally somewhere else
+-extern volatile float ext_V_EV;
+-extern volatile float ext_I_EV;
+-extern volatile float ext_V_PV;
+-extern volatile float ext_I_PV;
+-extern volatile float ext_V_Bat;
+-extern volatile float ext_I_Bat;
++extern  float ext_V_EV;
++extern  float ext_I_EV;
++extern  float ext_V_PV;
++extern  float ext_I_PV;
++extern  float ext_V_Bat;
++extern  float ext_I_Bat;
+ // Tells this file that your custom I2C functions exist in main.c
+ extern void update_telemetry_data(void);
+ extern void respond_to_ESP32(void);
+ 
+-// Force the compiler to keep this array for the graph!
+-#pragma RETAIN(I_EV_history)
+-volatile float I_EV_history[200]; 
+-volatile uint16_t plot_index = 0;
++
+ 
+ // Live debugging variables (Must be volatile to show up in Watch window!)
+ float v_pin_V_PV  = 0.0f;
+@@ -562,10 +559,10 @@ void PLECS_to_CCS_initialize(void)
+ 
+ void PLECS_to_CCS_step(void)
+ {
+-  // ==========================================================
+-    // 1. READ RAW ADC REGISTERS & SCALE TO PIN VOLTAGE (0-3.3V)
+-    // ==========================================================
+-    
++
++// 1. READ RAW ADC REGISTERS & SCALE TO PIN VOLTAGE (0-3.3V)
++
++   
+     // --- VOLTAGES (ADCB Module) ---
+     // Pin 24: ADCINB0 -> PV Voltage
+    v_pin_V_PV  = (float)AdcbResultRegs.ADCRESULT0 * (3.3f / 4096.0f); 
+@@ -588,9 +585,7 @@ void PLECS_to_CCS_step(void)
+     v_pin_I_EV  = (float)AdccResultRegs.ADCRESULT2 * (3.3f / 4096.0f); 
+ 
+ 
+-    // ==========================================================
+-    // 2. SCALE PIN VOLTAGES TO REAL-WORLD AMPS & VOLTS
+-    // ==========================================================
++    // 2. SCALE PIN VOLTAGES TO Actual AMPS & VOLTS
+    
+     // --- Current Sensor Math (ACS725) ---
+     ext_I_Bat = ((v_pin_I_Bat*7.6541f)-12.62f) ; // Bidirectional Storage
+@@ -605,8 +600,16 @@ void PLECS_to_CCS_step(void)
+     ext_V_PV  = v_pin_V_PV  * 7.353f; 
+     ext_V_Bat = v_pin_V_Bat * 4.993f; 
+     ext_V_EV  = v_pin_V_EV  * 2.480f; 
+-  
++   
+ 
++   /*
++   ext_V_PV = 18.0f;
++   ext_I_PV= 1.0f;
++   ext_V_Bat = 12.5f;
++   ext_I_Bat = 1.2f;
++   ext_V_EV = 5.8f;
++   ext_I_EV = 0.0f;
++   */
+     abcounter++;
+       
+ 
+@@ -614,13 +617,18 @@ void PLECS_to_CCS_step(void)
+     // 3. TELEMETRY & I2C EXECUTION
+     // ==========================================================
+   // Run telemetry only once every 500 cycles (100 Hz instead of 50 kHz)
++  // ==========================================================
++    // 3. TELEMETRY & I2C EXECUTION
++    // ==========================================================
++    // Run telemetry only once every 500 cycles (100 Hz instead of 50 kHz)
+     static uint16_t telemetry_tick = 0;
+     if (++telemetry_tick >= 500) {
+-        update_telemetry_data();
++        update_telemetry_data();  
+         telemetry_tick = 0;
++            
+     }
++respond_to_ESP32();
+ 
+-     respond_to_ESP32();
+ 
+    if (PLECS_to_CCS_errorStatus)
+    {
+@@ -789,11 +797,34 @@ void PLECS_to_CCS_step(void)
+       PLECS_to_CCS_errorStatus = *PLECS_to_CCS_cScriptStruct[3].errorStatus;
+ 
+    /* PWM : 'PLECS_to_CCS/Leg1_Q1_Q2\nePWM1A & B' */
++/* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg_1' */
++   PLECS_to_CCS_B.Shut_Off_Leg_1 = PLECS_to_CCS_B.RoutingLogic[0] > 0.04f;
++   
++   /* PWM : 'PLECS_to_CCS/Leg1_Q1_Q2\nePWM1A & B' */
++   if((PLECS_to_CCS_B.Shut_Off_Leg_1) == 0)
++   {
++      PLXHAL_PWM_setToPassive(0);
++   }
++   else
++   {
++      PLXHAL_PWM_setDuty(0, PLECS_to_CCS_B.RoutingLogic[0]);
++      PLXHAL_PWM_setToOperational(0);
++   }
+ 
+-   PLXHAL_PWM_setDuty(0, PLECS_to_CCS_B.RoutingLogic[0]);
++   /* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg 2' */
++   PLECS_to_CCS_B.Shut_Off_Leg2 = PLECS_to_CCS_B.RoutingLogic[1] > 0.04f;
++   
+    /* PWM : 'PLECS_to_CCS/Leg2_Q3_Q4\nePWM4A & B' */
++   if((PLECS_to_CCS_B.Shut_Off_Leg2) == 0)
++   {
++      PLXHAL_PWM_setToPassive(1);
++   }
++   else
++   {
++      PLXHAL_PWM_setDuty(1, PLECS_to_CCS_B.RoutingLogic[1]);
++      PLXHAL_PWM_setToOperational(1);
++   }
+ 
+-   PLXHAL_PWM_setDuty(1, PLECS_to_CCS_B.RoutingLogic[1]);
+    /* Zero-Order Hold : 'PLECS_to_CCS/Control Logic/Buck Current PI/Discrete Time/Zero-Order\nHold'
+     * incorporates
+     *  Sum : 'PLECS_to_CCS/Control Logic/Sum1'
+@@ -836,9 +867,9 @@ void PLECS_to_CCS_step(void)
+ 
+    /* Saturation : 'PLECS_to_CCS/Control Logic/Buck Current PI/Saturation/internal/Saturation Select/constant/Saturation' */
+    PLECS_to_CCS_B.Saturation_2 = PLECS_to_CCS_B.Sum_2;
+-   if (PLECS_to_CCS_B.Saturation_2 > 0.56f)
++   if (PLECS_to_CCS_B.Saturation_2 > 0.7f)
+    {
+-      PLECS_to_CCS_B.Saturation_2 = 0.56f;
++      PLECS_to_CCS_B.Saturation_2 = 0.7f;
+    }
+    else if (PLECS_to_CCS_B.Saturation_2 < 0.f)
+    {
+@@ -896,15 +927,6 @@ void PLECS_to_CCS_step(void)
+       PLECS_to_CCS_B.Saturation_3 = 0.f;
+    }
+ 
+-   /* Minimum / Maximum : 'PLECS_to_CCS/Control Logic/Min\/Max' */
+-   {
+-      float u, y;
+-      y = PLECS_to_CCS_B.Saturation_2;
+-      u = PLECS_to_CCS_B.Saturation_3;
+-      if (u < y)
+-         y = u;
+-      PLECS_to_CCS_B.Min_Max = y;
+-   }
+    if (PLECS_to_CCS_subTaskHit[0])
+    {
+       /* Zero-Order Hold : 'PLECS_to_CCS/Control Logic/Buck-Boost Voltage PI1/Discrete Time/Zero-Order\nHold'
+@@ -958,20 +980,44 @@ void PLECS_to_CCS_step(void)
+          PLECS_to_CCS_B.Saturation_4 = 0.f;
+       }
+    }
+-   /* Product : 'PLECS_to_CCS/Control Logic/Product'
+-    * incorporates
+-    *  Relational Operator : 'PLECS_to_CCS/Control Logic/Relational\nOperator'
+-    *  Constant : 'PLECS_to_CCS/Control Logic/EV current limit'
++  /* Minimum / Maximum : 'PLECS_to_CCS/Control Logic/Min\/Max' 
++    * (Updated to cascade all 4 hardware limits)
+     */
++   {
++      float u, y;
++      y = PLECS_to_CCS_B.Saturation_2;        // 1. Buck Current PI Limit
++      
++      u = PLECS_to_CCS_B.Saturation_3;        // 2. Storage Min Voltage PI Limit
++      if (u < y) y = u;
++      
++      u = 2.5f > PLECS_to_CCS_B.C_Script[0];  // 3. Hardware Overcurrent Relay (2.5A)
++      if (u < y) y = u;
++      
++      u = PLECS_to_CCS_B.Saturation_4;        // 4. EV Max Voltage PI Limit
++      if (u < y) y = u;
++      
++      PLECS_to_CCS_B.Min_Max = y;             // The absolute safest limit wins
++   }
++
++   /* Product : 'PLECS_to_CCS/Control Logic/Product' */
++   // The safest duty cycle is now strictly multiplied by the On/Off State Machine
+    PLECS_to_CCS_B.Product = PLECS_to_CCS_B.StateMachine[1] *
+-                            PLECS_to_CCS_B.Min_Max *
+-                            ((float)(2.5f >
+-                                     PLECS_to_CCS_B.C_Script[0])) *
+-                            PLECS_to_CCS_B.Saturation_4;
++                            PLECS_to_CCS_B.Min_Max;
+ 
++ /* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg_3' */
++   PLECS_to_CCS_B.Shut_Off_Leg_3 = PLECS_to_CCS_B.Product > 0.04f;
++   
+    /* PWM : 'PLECS_to_CCS/Buck_leg\nePWM2A & B' */
+-
+-   PLXHAL_PWM_setDuty(2, PLECS_to_CCS_B.Product);
++   if((PLECS_to_CCS_B.Shut_Off_Leg_3) == 0)
++   {
++      PLXHAL_PWM_setToPassive(2);
++   }
++   else
++   {
++      PLXHAL_PWM_setDuty(2, PLECS_to_CCS_B.Product);
++      PLXHAL_PWM_setToOperational(2);
++   }
++   
+    /* ADC : 'PLECS_to_CCS/Current ADC' */
+    PLECS_to_CCS_B.CurrentADC[0] = PLXHAL_ADC_getIn(0, 0);
+    PLECS_to_CCS_B.CurrentADC[1] = PLXHAL_ADC_getIn(0, 1);
+diff --git a/PLECS_to_CCS.h b/PLECS_to_CCS.h
+index cd26324..7659f7d 100644
+--- a/PLECS_to_CCS.h
++++ b/PLECS_to_CCS.h
+@@ -96,6 +96,9 @@ typedef struct
+    float Product;                   /* PLECS_to_CCS/Control Logic/Product */
+    float CurrentADC[3];             /* PLECS_to_CCS/Current ADC */
+    float VoltageADC[3];             /* PLECS_to_CCS/Voltage ADC */
++   bool Shut_Off_Leg_1;
++   bool Shut_Off_Leg2;
++   bool Shut_Off_Leg_3;
+ } PLECS_to_CCS_BlockOutputs;
+ extern PLECS_to_CCS_BlockOutputs PLECS_to_CCS_B;
+ 
+diff --git a/PLECS_to_CCS_0.c b/PLECS_to_CCS_0.c
+index c1df9dd..ac25c72 100644
+--- a/PLECS_to_CCS_0.c
++++ b/PLECS_to_CCS_0.c
+@@ -7,12 +7,12 @@ typedef float real_t;
+ #define REAL_MAX FLT_MAX
+ #define REAL_MIN FLT_MIN
+ #define REAL_EPSILON FLT_EPSILON
+-volatile float ext_V_EV = 0.0f;
+-volatile float ext_I_EV = 0.0f;
+-volatile float ext_V_PV = 0.0f;
+-volatile float ext_I_PV = 0.0f;
+-volatile float ext_V_Bat = 0.0f;
+-volatile float ext_I_Bat = 0.0f;
++ float ext_V_EV = 0.0f;
++ float ext_I_EV = 0.0f;
++ float ext_V_PV = 0.0f;
++ float ext_I_PV = 0.0f;
++ float ext_V_Bat = 0.0f;
++ float ext_I_Bat = 0.0f;
+ struct CScriptStruct
+ {
+    int numInputTerminals;
+@@ -108,8 +108,10 @@ void PLECS_to_CCS_0_cScriptOutput(const struct CScriptStruct *cScriptStruct)
+    OutputSignal(5, 0) = ext_I_Bat; // Pin 6
+ }
+ 
++#pragma CODE_SECTION(PLECS_to_CCS_0_cScriptUpdate, "ramfuncs")
+ void PLECS_to_CCS_0_cScriptUpdate(const struct CScriptStruct *cScriptStruct)
+ {
++   
+ }
+ 
+ void PLECS_to_CCS_0_cScriptDerivative(
+diff --git a/PLECS_to_CCS_1.c b/PLECS_to_CCS_1.c
+index 0424ca8..4f1c007 100644
+--- a/PLECS_to_CCS_1.c
++++ b/PLECS_to_CCS_1.c
+@@ -9,8 +9,8 @@ typedef float real_t;
+ #define REAL_EPSILON FLT_EPSILON
+ static float P_previous = 0.0;
+ static float V_previous = 0.0;
+-static float V_ref = 18; // Start at 18V
+-static float Step = 0.05;   // Move 0.01V at a time
++static float V_ref; // Start at 18V
++static float Step = 0.2f;   // Move 0.01V at a time
+ static int initialized = 0; // Required for the initialization block
+ 
+ struct CScriptStruct
+@@ -68,7 +68,7 @@ struct CScriptStruct
+ #define NumDiscStates cScriptStruct->numDiscStates
+ #define NumZCSignals cScriptStruct->numZCSignals
+ #define NumParameters cScriptStruct->numParameters
+-#define NumSampleTimes cScriptStruct->numSampleTimes
++#define NumSampleTimes cScriptStruct->numSampleTimesF
+ #define IsMajorStep cScriptStruct->isMajorTimeStep
+ #define CurrentTime cScriptStruct->time
+ #define NextSampleHit (*cScriptStruct->nextSampleHit)
+@@ -117,36 +117,38 @@ void PLECS_to_CCS_1_cScriptOutput(const struct CScriptStruct *cScriptStruct)
+     // 3. Run MPPT algorithm at 10 Hz (Every 5000th cycle)
+     if (mppt_counter >= 5000) {
+         
+-        float Power = V_pv * I_pv;
++  float Power = V_pv * I_pv;
+ 
+-        // Only run P&O if power flow is above 0.5 W
+-        if (Power > 0.5) {
++        // 1. Raise threshold to ~1.5W to stay above the zero-current noise floor
++        if (Power > 1.5f) {
+             float dP = Power - P_previous;
+             float dV = V_pv - V_previous;
+ 
+-            if (dP > 0) {
+-                if (dV > 0) V_ref += Step;
+-                else V_ref -= Step;
+-            } else {
+-                if (dV > 0) V_ref -= Step;
+-                else V_ref += Step;
++            // 2. Add a deadband. Only perturb if the power change is actual, not noise.
++            if (fabsf(dP) > 0.05f) { 
++                if (dP > 0) {
++                    if (dV > 0) V_ref += Step;
++                    else V_ref -= Step;
++                } else {
++                    if (dV > 0) V_ref -= Step;
++                    else V_ref += Step;
++                }
+             }
+         } 
+-        // Kickstart - If power is zero, slowly crawl down to find the knee
++        // Kickstart - Safely crawl down to find the knee
+         else {
+-            V_ref -= 0.01; // step to avoid overshooting
++            V_ref -= 0.5f; 
+         }
+ 
+         // Clamping
+-        if (V_ref > 20) V_ref = 20; // Voc
+-        if (V_ref < 5.0) V_ref = 5.0; 
++        if (V_ref > 20.0f) V_ref = 20.0f; 
++        if (V_ref < 5.0f) V_ref = 5.0f; 
+ 
+-        // Save current states for the next MPPT cycle
+         P_previous = Power;
+         V_previous = V_pv;
+         
+         // Reset counter
+-        mppt_counter = 0;
++        mppt_counter = 0.0f;
+     }
+ 
+     // 4. Output written at full 50 kHz using the safely held static memory
+diff --git a/PLECS_to_CCS_2.c b/PLECS_to_CCS_2.c
+index 14ad999..3d28356 100644
+--- a/PLECS_to_CCS_2.c
++++ b/PLECS_to_CCS_2.c
+@@ -117,18 +117,18 @@ void PLECS_to_CCS_2_cScriptOutput(const struct CScriptStruct *cScriptStruct)
+         if (Voltage_Pv < V_PV_MIN) {
+             enable_4sw = 0.0; 
+             if (Voltage_Bat > V_Storage_Min) {
+-                enable_buck = 1.0; 
++                enable_buck = 1.0f; 
+             } else {
+-                enable_buck = 0.0;
++                enable_buck = 0.0f;
+             }
+         } 
+         else {
+-            enable_4sw = 1.0; 
+-            enable_buck = 1.0; 
++            enable_4sw = 1.0f; 
++            enable_buck = 1.0f; 
+         }
+         
+         // Reset the counter
+-        state_counter = 0;
++        state_counter = 0.0;
+     }
+ 
+     // 4. Outputs (Written to the Routing Logic at full 50 kHz using the saved memory)
+diff --git a/PLECS_to_CCS_3.c b/PLECS_to_CCS_3.c
+index 7f0777c..157055c 100644
+--- a/PLECS_to_CCS_3.c
++++ b/PLECS_to_CCS_3.c
+@@ -96,31 +96,37 @@ void PLECS_to_CCS_3_cScriptStart(const struct CScriptStruct *cScriptStruct)
+ void PLECS_to_CCS_3_cScriptOutput(const struct CScriptStruct *cScriptStruct)
+ {
+    float D = InputSignal(0, 0);  // Duty Cycle from PID
+-   // UNIFIED 4-SWITCH BUCK-BOOST LOGIC
+-   // D now ranges from 0.0 to 2.0
+ 
++   if (D > 0.95 && D <= 1.0)
++   {
++      D = 0.95;
++   }
++   else if (D > 1.0 && D < 1.05)
++   {
++      D = 1.05;
++   }
+ 
++   // 2. UNIFIED 4-SWITCH BUCK-BOOST LOGIC
+    if (D < 0.02)
+    {
+       // Global Safety Cutoff
+       OutputSignal(0, 0) = 0.0;
+       OutputSignal(1, 0) = 0.0;
+    }
+-   else if (D <= 1.0)
++   else if (D <= 0.95)
+    {
+-      // BUCK REGION (D from 0.02 to 1.0)
+-      OutputSignal(0, 0) = D;     // Left leg switching normally
+-      OutputSignal(1, 0) = 1.0;   // Right leg locked ON (Boost is bypassed)
++      // BUCK REGION (D from 0.02 to 0.95)
++      OutputSignal(0, 0) = D;     
++      OutputSignal(1, 0) = 0.95;  
+    }
+    else
+    {
+-      // BOOST REGION (D from 1.0 to 2.0)
+-      OutputSignal(0, 0) = 1.0;     // Left leg locked ON (Buck is bypassed)
+-      OutputSignal(1, 0) = 2.0 - D; // As D rises above 1.0, Boost action increases
++      // BOOST REGION (D from 1.05 to 2.0)
++      OutputSignal(0, 0) = 0.95;   
++      OutputSignal(1, 0) = 2.0 - D; 
+    }
+ }
+ 
+-
+ void PLECS_to_CCS_3_cScriptUpdate(const struct CScriptStruct *cScriptStruct)
+ {
+ }
+diff --git a/PLECS_to_CCS_hal.c b/PLECS_to_CCS_hal.c
+index f05defb..016c8e3 100644
+--- a/PLECS_to_CCS_hal.c
++++ b/PLECS_to_CCS_hal.c
+@@ -21,7 +21,7 @@
+ #include "epwm.h"
+ #include "hrpwm.h"
+ 
+-
++extern void respond_to_ESP32(void);
+ /* HAL Declarations */
+ void DevInit(uint32_t aDeviceClkConf);
+ void InitFlashHz(uint32_t clkHz);
+@@ -44,11 +44,13 @@ PIL_Obj_t PilObj;
+ PIL_Handle_t PilHandle = 0;
+ extern PLX_PWM_Handle_t EpwmHandles[];
+ // PWM Enable Functions
++#pragma CODE_SECTION(PLXHAL_PWM_setToPassive, "ramfuncs")
+ void PLXHAL_PWM_setToPassive(uint16_t aChannel)
+ {
+    PLX_PWM_setOutToPassive(EpwmHandles[aChannel]);
+ }
+ 
++#pragma CODE_SECTION(PLXHAL_PWM_setToOperational, "ramfuncs")
+ void PLXHAL_PWM_setToOperational(uint16_t aChannel)
+ {
+    PLX_PWM_setOutToOperational(EpwmHandles[aChannel]);
+@@ -182,7 +184,6 @@ void PLECS_to_CCS_syncTimers(void)
+ /* Background task */
+ void PLECS_to_CCS_background(void)
+ {
+-
+ }
+ 
+ /* HAL Initialization Code */
+diff --git a/PLECS_to_CCS_main.c b/PLECS_to_CCS_main.c
+index e326b38..64291b2 100644
+--- a/PLECS_to_CCS_main.c
++++ b/PLECS_to_CCS_main.c
+@@ -14,12 +14,12 @@ Uint16 i2c_tx_index = 0;
+ #ifndef _FLASH
+ #endif
+ 
+-extern volatile float ext_V_EV;
+-extern volatile float ext_I_EV;
+-extern volatile float ext_V_PV;
+-extern volatile float ext_I_PV;
+-extern volatile float ext_V_Bat;
+-extern volatile float ext_I_Bat;
++extern   float ext_V_EV;
++extern   float ext_I_EV;
++extern   float ext_V_PV;
++extern   float ext_I_PV;
++extern   float ext_V_Bat;
++extern   float ext_I_Bat;
+ 
+ void init_I2C_Hardware(void)
+ {
+@@ -67,43 +67,44 @@ void PLECS_to_CCS_initialize();
+ #endif
+ #endif
+ 
+-// Function to determine the current operating mode
++/// Function to determine the current operating mode
+ float determine_system_mode(void)
+ {
+-    // We use a small threshold (0.1A or 1.0V) to account for sensor noise. 
+-    // Pure 0.0f is rare in physical hardware!
+-    float i_threshold = 0.1f;  
+-    float v_threshold = 1.0f;  
++    float i_threshold = 0.1f;
++    float v_threshold = 1.0f;
+ 
+-    // Helper booleans to make the logic readable
+     bool pv_active = (ext_V_PV > v_threshold) || (ext_I_PV > i_threshold);
+     bool ev_charging = (ext_I_EV > i_threshold);
+ 
+-    // Mode 0: PV charging storage only (No EV charging)
++    // --- NEW: EMA Filter for Battery Current ---
++    // This variable must be static so it remembers its value between cycles
++    static float smoothed_I_Bat = 0.0f;
++
++    // Alpha of 0.05 heavily smooths the data. 
++    // It takes 5% of the new noisy reading and 95% of the old stable reading.
++    smoothed_I_Bat = (0.05f * ext_I_Bat) + (0.95f * smoothed_I_Bat);
++    // -----------------------------------------
++
+     if (pv_active && !ev_charging) 
+     {
+         return 0.0f; 
+     } 
+-    // Mode 1: No PV power, storage charges EV
+     else if (!pv_active && ev_charging) 
+     {
+         return 1.0f; 
+     } 
+-    // Mode 2: PV has output, Storage current is positive, EV is being charged
+-    else if (pv_active && ev_charging && (ext_I_Bat > i_threshold)) 
++    // FIXED: Use the smoothed current, and remove the dead zone gap
++    else if (pv_active && ev_charging && (smoothed_I_Bat >= 0.0f)) 
+     {
+         return 2.0f; 
+     } 
+-    // Mode 3: PV has output, storage current is negative, EV is being charged
+-    else if (pv_active && ev_charging && (ext_I_Bat < -i_threshold)) 
++    else if (pv_active && ev_charging && (smoothed_I_Bat < 0.0f)) 
+     {
+         return 3.0f; 
+     }
+ 
+-    // Default/Unknown mode (if no conditions are perfectly met due to transitions)
+     return -1.0f; 
+ }
+-
+ // Function to determine the charging speed status
+ // Returns 1.0f for Fast Charge, 0.0f for Non-Fast Charge, -1.0f for Not Charging
+ 
+@@ -146,14 +147,12 @@ void respond_to_ESP32(void)
+         I2caRegs.I2CSTR.bit.SCD = 1; // Clear the flag first
+         i2c_tx_index = 0;            // Reset the byte counter
+         
+-        // --- THE MAGIC FLUSH ---
+-        // Rapidly toggle the hardware reset bit. 
+-        // This instantly vaporizes any leftover bytes stuck in the shift register!
++        
+         I2caRegs.I2CMDR.bit.IRS = 0; 
+         I2caRegs.I2CMDR.bit.IRS = 1; 
+     }
+ 
+-    // 2. Feed the Pipeline
++ 
+    // 2. Feed the Pipeline
+     if (I2caRegs.I2CSTR.bit.XRDY == 1)
+     {
+diff --git a/tiinc/fast/ctrl.h b/tiinc/fast/ctrl.h
+index 7c5f9c1..486deeb 100644
+--- a/tiinc/fast/ctrl.h
++++ b/tiinc/fast/ctrl.h
+@@ -278,11 +278,12 @@ static inline int_least16_t CTRL_getCount_speed(CTRL_Handle handle)
+ //! \brief     Gets the state count
+ //! \param[in] handle  The controller (CTRL) handle
+ //! \return    The state count
++#pragma FUNC_ALWAYS_INLINE(CTRL_getCount_state)
+ static inline int_least32_t CTRL_getCount_state(CTRL_Handle handle)
+ {
+   CTRL_Obj *obj = (CTRL_Obj *)handle;
+ 
+-  return(obj->counter_state);
++ return (handle->counter_state);
+ } // end of CTRL_getCount_state() function
+ 
+ 
+@@ -333,11 +334,12 @@ static inline CTRL_ErrorCode_e CTRL_getErrorCode(CTRL_Handle handle)
+ //! \brief     Gets the enable controller flag value from the controller
+ //! \param[in] handle  The controller (CTRL) handle
+ //! \return    The enable controller flag value
++#pragma FUNC_ALWAYS_INLINE(CTRL_getFlag_enable)
+ static inline bool CTRL_getFlag_enable(CTRL_Handle handle)
+ {
+   CTRL_Obj *obj = (CTRL_Obj *)handle;
+ 
+-  return(obj->flag_enable);
++  return (handle->flag_enable);
+ } // end of CTRL_getFlag_enable() function
+ 
+ 
+@@ -846,11 +848,12 @@ static inline float32_t CTRL_getSpeedCtrlPeriod_sec(CTRL_Handle handle)
+ //! \brief     Gets the controller state
+ //! \param[in] handle  The controller (CTRL) handle
+ //! \return    The controller state
++#pragma FUNC_ALWAYS_INLINE(CTRL_getState)
+ static inline CTRL_State_e CTRL_getState(CTRL_Handle handle)
+ {
+   CTRL_Obj *obj = (CTRL_Obj *)handle;
+ 
+-  return(obj->state);
++  return (handle->state);
+ } // end of CTRL_getState() function
+ 
+ 
+@@ -1032,11 +1035,12 @@ static inline float32_t *CTRL_getVq_offset_V_addr(CTRL_Handle handle)
+ //! \param[in] handle  The controller (CTRL) handle
+ //! \param[in] state   The controller state
+ //! \return    The wait time, controller clock counts
+-static inline int_least32_t CTRL_getWaitTime(CTRL_Handle handle,const CTRL_State_e state)
++#pragma FUNC_ALWAYS_INLINE(CTRL_getWaitTime)
++static inline int_least32_t CTRL_getWaitTime(CTRL_Handle handle, const CTRL_State_e state)
+ {
+   CTRL_Obj *obj = (CTRL_Obj *)handle;
+ 
+-  return(obj->waitTimes[state]);
++return (handle->waitTime[state]);
+ } // end of CTRL_getWaitTime() function
+ 
+ 

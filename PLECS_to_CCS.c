@@ -561,7 +561,7 @@ void PLECS_to_CCS_step(void)
 {
 
 // 1. READ RAW ADC REGISTERS & SCALE TO PIN VOLTAGE (0-3.3V)
-
+   
    
     // --- VOLTAGES (ADCB Module) ---
     // Pin 24: ADCINB0 -> PV Voltage
@@ -591,6 +591,7 @@ void PLECS_to_CCS_step(void)
     ext_I_Bat = ((v_pin_I_Bat*7.6541f)-12.62f) ; // Bidirectional Storage
     ext_I_PV  = ((3.8549f*v_pin_I_PV)-1.2705f);   // Unidirectional PV
     ext_I_EV  = ((v_pin_I_EV*3.8358f)-1.2658f);   // Unidirectional EV
+   
 
     // Current Sensor Noise Clamp 
     if (ext_I_PV < 0.0f) { ext_I_PV = 0.0f; }
@@ -627,8 +628,6 @@ void PLECS_to_CCS_step(void)
         telemetry_tick = 0;
             
     }
-respond_to_ESP32();
-
 
    if (PLECS_to_CCS_errorStatus)
    {
@@ -796,35 +795,92 @@ respond_to_ESP32();
    if (*PLECS_to_CCS_cScriptStruct[3].errorStatus)
       PLECS_to_CCS_errorStatus = *PLECS_to_CCS_cScriptStruct[3].errorStatus;
 
-   /* PWM : 'PLECS_to_CCS/Leg1_Q1_Q2\nePWM1A & B' */
-/* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg_1' */
+ // ====================================================================
+   // LEG 1: Left Buck Switch
+   // ====================================================================
+   /* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg_1' */
    PLECS_to_CCS_B.Shut_Off_Leg_1 = PLECS_to_CCS_B.RoutingLogic[0] > 0.04f;
    
+   // Static memory: Remembers the state between 50kHz cycles
+   static bool leg1_is_passive = false; 
+
    /* PWM : 'PLECS_to_CCS/Leg1_Q1_Q2\nePWM1A & B' */
    if((PLECS_to_CCS_B.Shut_Off_Leg_1) == 0)
    {
-      PLXHAL_PWM_setToPassive(0);
+      // Only write to hardware if we are NOT already passive
+      if (!leg1_is_passive) 
+      {
+          PLXHAL_PWM_setToPassive(0);
+          leg1_is_passive = true;
+      }
    }
    else
    {
+      // Only write to hardware if we need to wake up
+      if (leg1_is_passive) 
+      {
+          PLXHAL_PWM_setToOperational(0);
+          leg1_is_passive = false;
+      }
+      // Always update the Duty Cycle (because this is a fast, shadowed register write!)
       PLXHAL_PWM_setDuty(0, PLECS_to_CCS_B.RoutingLogic[0]);
-      PLXHAL_PWM_setToOperational(0);
    }
 
+   // ====================================================================
+   // LEG 2: Right Boost Switch
+   // ====================================================================
    /* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg 2' */
    PLECS_to_CCS_B.Shut_Off_Leg2 = PLECS_to_CCS_B.RoutingLogic[1] > 0.04f;
    
+   // Static memory for Leg 2
+   static bool leg2_is_passive = false;
+
    /* PWM : 'PLECS_to_CCS/Leg2_Q3_Q4\nePWM4A & B' */
    if((PLECS_to_CCS_B.Shut_Off_Leg2) == 0)
    {
-      PLXHAL_PWM_setToPassive(1);
+      if (!leg2_is_passive)
+      {
+          PLXHAL_PWM_setToPassive(1);
+          leg2_is_passive = true;
+      }
    }
    else
    {
+      if (leg2_is_passive)
+      {
+          PLXHAL_PWM_setToOperational(1);
+          leg2_is_passive = false;
+      }
       PLXHAL_PWM_setDuty(1, PLECS_to_CCS_B.RoutingLogic[1]);
-      PLXHAL_PWM_setToOperational(1);
    }
 
+   // ====================================================================
+   // LEG 3: EV Charger (Buck)
+   // ====================================================================
+   /* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg_3' */
+   PLECS_to_CCS_B.Shut_Off_Leg_3 = PLECS_to_CCS_B.Product > 0.04f;
+   
+   // Static memory for Leg 3
+   static bool leg3_is_passive = false;
+
+   /* PWM : 'PLECS_to_CCS/Buck_leg\nePWM2A & B' */
+   if((PLECS_to_CCS_B.Shut_Off_Leg_3) == 0)
+   {
+      if (!leg3_is_passive)
+      {
+          PLXHAL_PWM_setToPassive(2);
+          leg3_is_passive = true;
+      }
+   }
+   else
+   {
+      if (leg3_is_passive)
+      {
+          PLXHAL_PWM_setToOperational(2);
+          leg3_is_passive = false;
+      }
+      PLXHAL_PWM_setDuty(2, PLECS_to_CCS_B.Product);
+   }
    /* Zero-Order Hold : 'PLECS_to_CCS/Control Logic/Buck Current PI/Discrete Time/Zero-Order\nHold'
     * incorporates
     *  Sum : 'PLECS_to_CCS/Control Logic/Sum1'
@@ -1004,19 +1060,7 @@ respond_to_ESP32();
    PLECS_to_CCS_B.Product = PLECS_to_CCS_B.StateMachine[1] *
                             PLECS_to_CCS_B.Min_Max;
 
- /* Compare to Constant : 'PLECS_to_CCS/Shut-Off_Leg_3' */
-   PLECS_to_CCS_B.Shut_Off_Leg_3 = PLECS_to_CCS_B.Product > 0.04f;
-   
-   /* PWM : 'PLECS_to_CCS/Buck_leg\nePWM2A & B' */
-   if((PLECS_to_CCS_B.Shut_Off_Leg_3) == 0)
-   {
-      PLXHAL_PWM_setToPassive(2);
-   }
-   else
-   {
-      PLXHAL_PWM_setDuty(2, PLECS_to_CCS_B.Product);
-      PLXHAL_PWM_setToOperational(2);
-   }
+
    
    /* ADC : 'PLECS_to_CCS/Current ADC' */
    PLECS_to_CCS_B.CurrentADC[0] = PLXHAL_ADC_getIn(0, 0);
